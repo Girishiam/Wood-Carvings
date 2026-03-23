@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------- #
 
 _STYLE_GUIDE_PATH = os.path.join(
-    os.path.dirname(os.path.dirname(__file__)), "assets", "artist_style_guide.txt"
+    os.path.dirname(os.path.dirname(__file__)), "services", "artist_style_guide.txt"
 )
 try:
     with open(_STYLE_GUIDE_PATH, "r", encoding="utf-8") as _f:

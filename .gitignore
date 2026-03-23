@@ -158,3 +158,5 @@ cython_debug/
 
 #frontend_NodeModules
 frontend/node_modules
+
+assets/
