@@ -3,7 +3,7 @@ AI Image Generation System — FastAPI entry point.
 
 Endpoints:
   GET  /health               — liveness check
-  GET  /cache/status         — returns cache stub (Dropbox removed)
+  GET  /cache/status         — returns cache stub
   POST /cache/refresh        — stub
   DELETE /cache              — stub
   POST /generate             — main generation endpoint
@@ -12,14 +12,11 @@ Endpoints:
 
 import sys
 import os
+import json
 
 # CRITICAL FIX for Python 3.14 (experimental) compatibility
-# Setting these modules to None in sys.modules forces Google's libraries 
-# to skip the broken C-extensions and fall back to pure-Python mode.
 sys.modules["google._upb._message"] = None
 sys.modules["google.protobuf.pyext._message"] = None
-
-# Explicitly force pure-python implementation for protobuf
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 
 from dotenv import load_dotenv
@@ -55,14 +52,11 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Singleton services (instantiated once at startup)
 _prompt: PromptService | None = None
 _vertex: VertexService | None = None
 
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Initialise singleton services on startup; clean up on shutdown."""
     global _prompt, _vertex
     logger.info("Starting up services …")
     _prompt = PromptService()
@@ -81,17 +75,20 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# CORS Configuration
+# Get allowed origins from environment variable or use defaults
+ALLOWED_ORIGINS = os.getenv(
+    "ALLOWED_ORIGINS",
+    "http://localhost:3000,http://localhost:3001,https://woodcarvings-frontend.onrender.com"
+).split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://your-production-domain.com"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# ------------------------------------------------------------------ #
-# Dependency injectors                                                 #
-# ------------------------------------------------------------------ #
 
 def get_prompt() -> PromptService:
     if _prompt is None:
@@ -111,54 +108,40 @@ def get_vertex() -> VertexService:
 async def health_check():
     return {"status": "active", "version": "1.0.0"}
 
-
-@app.get(
-    "/difficulty-levels",
-    response_model=list[DifficultyLevelInfo],
-    tags=["Config"],
-)
+@app.get("/difficulty-levels", response_model=list[DifficultyLevelInfo], tags=["Config"])
 async def get_difficulty_levels():
-    """Return the available difficulty levels and their descriptions."""
     return [
         {
             "id": "beginner",
             "label": "Beginner Level",
             "desc": "Simple bold forms, no cut-throughs",
-            "details": "The focus is on providing simple, bold, and durable designs that are approachable for new carvers. Subject: A single standing figure with no props, objects, or multiple character interactions. Pose: Static and relaxed with the head facing forward. Arms are attached to the body (often with hands in pockets), and legs are mostly one solid mass. Detail: Minimal detail with simplified or hidden hands. Technical Constraints: No cut-through areas are permitted."
+            "details": "The beginner level focuses on approachability and durability, utilizing simple and bold shapes. Composition: The design must feature a single standing figure with no interactions, multiple characters, or held props/objects. Pose & Movement: The character should be in a relaxed, static pose with their head facing forward. Arms must be attached to the body, typically at the sides or with hands in pockets, and legs should be carved as mostly one solid mass. Details: Carvings should have minimal detail, with hands that are either simplified or hidden. The character can have any body type but should have a simple expression, such as happy, neutral, or grumpy. Technical Constraints: There are absolutely no cut-through areas permitted. Style: Despite being simple, the pattern must still clearly reflect Chris Hammack's recognizable carving style and avoid looking generic."
         },
         {
             "id": "intermediate",
             "label": "Intermediate Level",
             "desc": "Movement, props, expressive",
-            "details": "This level bridges the gap between basic shapes and professional complexity by introducing movement and situational humor. Subject: Includes simple accessories (tools, animals, or props) to enhance character-driven storytelling. Pose & Movement: Figures may be leaning, walking, or running, though extreme torso twisting is avoided. Heads may be turned or slightly tilted. Detail: Faces are more expressive (open mouths, raised eyebrows), and hands are visible and more defined, though they avoid intricate finger detail. Technical Constraints: Cut-throughs are encouraged (e.g., arms/legs separated from the body), but they must not create fragile structures or be excessively difficult to reach with standard tools."
+            "details": "The intermediate level introduces movement, story elements, and situational humor without introducing extreme technical difficulties. Composition: Carvings can include simple accessories, animals, tools, or props (e.g., a fish, dog, or hammer) to enhance storytelling. Pose & Movement: Figures can be in motion—such as leaning, walking, or running—and their limbs can vary independently in position. However, carvers should avoid extreme twisting of the torso. Facial Features: Faces should be more expressive and exaggerated, featuring open mouths or raised/lowered eyebrows. Heads may be turned or slightly tilted, and hair or hats can be more elaborate and positioned askew. Details & Clothing: Both hands may be visible and more defined, though overly intricate finger detail should still be avoided. Clothing can show movement with moderate folds, wrinkles, and manageable textures. Technical Constraints: Cut-throughs are allowed and encouraged, meaning arms and legs can be partially separated from the body. However, designs should not include excessively difficult undercuts or create fragile structural challenges."
         },
         {
             "id": "professional",
             "label": "Professional Level",
             "desc": "Complex scenes, deep details",
-            "details": "Professional patterns represent the highest level of craftsmanship, characterized by deep exaggeration and complex narratives. Subject: Often features multiple figures, complex scenes, and strong character interactions. Imaginative, layered humor is a primary driver of the design. Pose & Movement: Figures demonstrate dynamic movement, including twisting, bending, and rotation at the hips and shoulders. Heads may be angled in complex ways. Detail: Highly refined anatomy and expressive facial features. Intricate textures are used for hair, hats, and clothing (e.g., stitching, deep folds, and layered garments). Hands are fully visible with individual fingers. Technical Constraints: Extensive use of challenging cut-throughs, negative spaces, and advanced undercutting in hard-to-reach areas."
+            "details": "The professional level represents the highest degree of complexity, craftsmanship, and imaginative storytelling. Composition: Designs frequently feature multiple figures, complex scenes, and strong interactions between elements. Environments, props, and supporting structures are heavily used to enhance the narrative. Pose & Movement: Characters should demonstrate dynamic movement, including twisting, bending, leaning, and interacting with other elements. Advanced body positioning, such as rotation at the hips and shoulders, is encouraged. Facial Features & Anatomy: Faces require highly expressive and detailed features, utilizing subtle expressions and deep exaggeration. Heads can be angled in complex ways, and anatomy should be refined with a believable structure. Details & Clothing: Hands must be fully visible and detailed, including carving individual fingers when appropriate. Clothing can feature complex folds, layered garments, and detailed textures like stitching and fabric patterns. Technical Constraints: Professional designs demand extensive use of cut-throughs and challenging negative spaces. Carvers are expected to execute advanced undercutting techniques, including in hard-to-reach areas."
         }
     ]
 
-
-@app.get(
-    "/cache/status",
-    response_model=CacheStatusResponse,
-    tags=["Cache"],
-)
+@app.get("/cache/status", response_model=CacheStatusResponse, tags=["Cache"])
 async def cache_status():
     return CacheStatusResponse(cached=False, image_count=0, dropbox_link=None)
-
 
 @app.post("/cache/refresh", tags=["Cache"])
 async def refresh_cache():
     return {"refreshed": True, "image_count": 0}
 
-
 @app.delete("/cache", tags=["Cache"])
 async def clear_cache():
     return {"cleared": True}
-
 
 @app.post(
     "/generate",
@@ -172,16 +155,13 @@ async def generate(
     vertex: VertexService = Depends(get_vertex),
 ):
     """
-    Generate a 4-view character sheet (front / back / left / right).
-
-    - **mode=sketch** → black & white ink line art
-    - **mode=color**  → full color wood-carving folk art style
+    Generate a 4-view character sheet using the Anchor Pipeline (front / back / left / right).
     """
     t_start = time.monotonic()
 
-    # 1. Build optimised prompt
+    # 1. Build optimised prompt dictionary (Front, Left, Back, Right)
     try:
-        final_prompt = await prompt_svc.build_prompt(
+        prompts_dict = await prompt_svc.build_sequential_prompts(
             body.prompt, 
             body.mode.value, 
             body.difficulty.value
@@ -197,13 +177,14 @@ async def generate(
     }
     target_model = model_map.get(body.model_provider.value, "imagen-3.0-generate-002")
 
+    # 3. Generate views via the Anchor & Reference Pipeline
     try:
-        raw_views = await vertex.generate_views(final_prompt, target_model)
+        raw_views = await vertex.generate_views(prompts_dict, target_model)
     except Exception as e:
-        logger.error(f"[/generate] Imagen 3 failed: {e}")
+        logger.error(f"[/generate] Imagen Generation failed: {e}")
         raise HTTPException(status_code=500, detail=f"Image generation failed: {e}")
 
-    # 3. Package response
+    # 4. Package response
     elapsed_ms = int((time.monotonic() - t_start) * 1000)
     views = [GeneratedView(**v) for v in raw_views]
 
@@ -216,11 +197,10 @@ async def generate(
         success=True,
         views=views,
         mode=body.mode,
-        prompt_used=final_prompt,
+        prompt_used=prompts_dict["front"], # Returning the Anchor prompt for schema compliance
         cached_references=False,
         generation_time_ms=elapsed_ms,
     )
-
 
 # ------------------------------------------------------------------ #
 # Global error handler                                                 #
@@ -233,11 +213,6 @@ async def global_exception_handler(request, exc):
         status_code=500,
         content={"success": False, "error": "Internal server error", "detail": str(exc)},
     )
-
-
-# ------------------------------------------------------------------ #
-# Dev runner                                                           #
-# ------------------------------------------------------------------ #
 
 if __name__ == "__main__":
     import uvicorn

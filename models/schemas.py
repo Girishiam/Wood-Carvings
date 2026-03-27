@@ -28,7 +28,7 @@ class DifficultyLevelInfo(BaseModel):
 
 
 class GenerateRequest(BaseModel):
-    prompt: str = Field(..., min_length=1, max_length=500, description="Character description (e.g. 'grumpy cowboy with sombrero')")
+    prompt: str = Field(..., min_length=1, max_length=4000, description="Character description")
     mode: GenerationMode = Field(..., description="'sketch' for ink line art, 'color' for painted wood carving")
     difficulty: DifficultyLevel = Field(DifficultyLevel.INTERMEDIATE, description="Pattern complexity level")
     model_provider: ModelProvider = Field(ModelProvider.IMAGEN_3, description="Which AI model to use")

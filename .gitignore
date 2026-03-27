@@ -158,5 +158,18 @@ cython_debug/
 
 #frontend_NodeModules
 frontend/node_modules
+frontend/dist
+frontend/build
 
+# Assets folder (too large for git)
 assets/
+
+# Scripts (development only)
+scripts/
+
+# Deployment
+.dockerignore
+render.yaml
+
+# Render build artifacts
+.render-buildpacks-cache/
