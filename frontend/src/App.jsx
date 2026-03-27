@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layers, Wand2, Download, AlertCircle, RefreshCcw, Trash2, Check, Settings2, Image as ImageIcon } from 'lucide-react';
 import axios from 'axios';
+import { API_BASE_URL } from './config';
 
 export default function App() {
   const [prompt, setPrompt] = useState('');
@@ -18,16 +19,16 @@ export default function App() {
   useEffect(() => {
     fetchDifficultyLevels();
     fetchCacheStatus();
-    
+
     // Test backend connection immediately
-    axios.get('/api/health').catch(e => {
+    axios.get(`${API_BASE_URL}/health`).catch(e => {
         console.warn("Backend might not be running. Start it with `python main.py`.");
     });
   }, []);
 
   const fetchDifficultyLevels = async () => {
     try {
-      const { data } = await axios.get('/api/difficulty-levels');
+      const { data } = await axios.get(`${API_BASE_URL}/difficulty-levels`);
       setDifficultyLevels(data);
     } catch (err) {
       console.error('Failed to fetch difficulty levels', err);
@@ -36,7 +37,7 @@ export default function App() {
 
   const fetchCacheStatus = async () => {
     try {
-      const { data } = await axios.get('/api/cache/status');
+      const { data } = await axios.get(`${API_BASE_URL}/cache/status`);
       setCacheStatus(data);
     } catch (err) {
       console.error('Failed to fetch cache status', err);
@@ -46,7 +47,7 @@ export default function App() {
   const handleRefreshCache = async () => {
     setRefreshingCache(true);
     try {
-      const { data } = await axios.post('/api/cache/refresh');
+      const { data } = await axios.post(`${API_BASE_URL}/cache/refresh`);
       setCacheStatus({ cached: true, image_count: data.image_count });
     } catch (err) {
       console.error('Failed to refresh cache', err);
@@ -57,7 +58,7 @@ export default function App() {
 
   const handleClearCache = async () => {
     try {
-      await axios.delete('/api/cache');
+      await axios.delete(`${API_BASE_URL}/cache`);
       setCacheStatus({ cached: false, image_count: 0 });
     } catch (err) {
       console.error('Failed to clear cache', err);
@@ -69,7 +70,7 @@ export default function App() {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post('/api/generate', {
+      const response = await axios.post(`${API_BASE_URL}/generate`, {
         prompt,
         mode,
         difficulty,
