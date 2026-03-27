@@ -169,7 +169,7 @@ scripts/
 
 # Deployment
 .dockerignore
-render.yaml
+
 
 # Render build artifacts
 .render-buildpacks-cache/
