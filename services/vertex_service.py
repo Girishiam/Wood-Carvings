@@ -13,7 +13,7 @@ import io
 import base64
 import asyncio
 import logging
-from PIL import Image
+from PIL import Image, ImageFilter, ImageEnhance
 
 # Fix for Python 3.14 compatibility with protobuf
 sys.modules["google._upb._message"] = None
@@ -51,9 +51,9 @@ class VertexService:
         Generates views. Routes Single Characters to 16:9 Sheet, and Groups to 4-way parallel.
         """
         loop = asyncio.get_event_loop()
-        
+
         is_group = prompts_dict.get("is_group") == "True"
-        
+
         if is_group:
             logger.info(f"[Imagen] GROUP detected. Using 4-way Parallel Generation fallback via {model_name}...")
             view_keys = ["indiv_front", "indiv_left", "indiv_back", "indiv_right"]
@@ -62,9 +62,9 @@ class VertexService:
                 tasks.append(loop.run_in_executor(
                     None, self._generate_single_view, prompts_dict[key], model_name
                 ))
-                
+
             results_bytes = await asyncio.gather(*tasks)
-            
+
             logger.info("[Imagen] Phase 2: Stitching 4 separate images horizontally...")
             final_bytes = await loop.run_in_executor(
                 None, self._stitch_images_horizontally, results_bytes
@@ -76,9 +76,16 @@ class VertexService:
                 None, self._generate_sheet_image, prompt, model_name
             )
 
+        # Convert to sketch (line art) if requested
+        # Tries Gemini image editing first (AI understands "sketch"), falls back to PIL
+        if prompts_dict.get("convert_to_sketch") == "True":
+            logger.info("[Sketch] Converting color output to sketch...")
+            final_bytes = await loop.run_in_executor(
+                None, self._convert_to_sketch, final_bytes
+            )
+
         logger.info("[Imagen] Pipeline complete. Returning generated sheet.")
-        
-        # Return as a single "sheet" to maintain compatibility with the frontend
+
         return [{
             "view": "sheet",
             "image_b64": base64.b64encode(final_bytes).decode("utf-8"),
@@ -91,17 +98,19 @@ class VertexService:
 
     def _generate_sheet_image(self, prompt: str, model_name: str) -> bytes:
         """Generates the single Character Sheet image."""
+        # Gemini API (key-based) does not support negative_prompt in config.
+        # Negative prompt is injected into the text prompt via "NEVER GENERATE:" section.
         response = self.client.models.generate_images(
             model=model_name,
             prompt=prompt,
             config=types.GenerateImagesConfig(
                 number_of_images=1,
-                aspect_ratio="16:9", # Wide format to fit 4 characters side-by-side
-            )
+                aspect_ratio="16:9",  # Wide format to fit 4 characters side-by-side
+            ),
         )
         if not response.generated_images:
             raise RuntimeError("Imagen returned no images for Character Sheet.")
-            
+
         return response.generated_images[0].image.image_bytes
 
     def _generate_single_view(self, prompt: str, model_name: str) -> bytes:
@@ -112,16 +121,55 @@ class VertexService:
             config=types.GenerateImagesConfig(
                 number_of_images=1,
                 aspect_ratio=_ASPECT_RATIO,
-            )
+            ),
         )
         if not response.generated_images:
             raise RuntimeError("Imagen returned no images for single view.")
-            
+
         return response.generated_images[0].image.image_bytes
 
     # ------------------------------------------------------------------ #
     # Private — Image Stitching                                           #
     # ------------------------------------------------------------------ #
+
+    @staticmethod
+    def _convert_to_sketch(image_bytes: bytes) -> bytes:
+        """
+        Converts color figurine to a clean high-contrast B&W reference sheet.
+        Uses grayscale + contrast only — no edge detection, no Gemini.
+
+        Why: Imagen 4 generates 3D textured figurines with lighting and wood grain.
+        Any edge detector (PIL or Gemini) traces lighting gradients as contour lines,
+        producing topographic-map noise. Grayscale preserves all character detail
+        cleanly and is the most usable format for carvers.
+        """
+        return VertexService._pil_sketch_convert(image_bytes)
+
+    @staticmethod
+    def _pil_sketch_convert(image_bytes: bytes) -> bytes:
+        """
+        PIL fallback: grayscale + high contrast + sharpen.
+        Produces a clean B&W woodcarving reference — much cleaner than edge detection
+        because it preserves the full character detail without noisy texture lines.
+        """
+        img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+
+        # Grayscale
+        gray = img.convert("L")
+
+        # Sharpen to crisp up edges
+        gray = gray.filter(ImageFilter.SHARPEN)
+        gray = gray.filter(ImageFilter.SHARPEN)
+
+        # High contrast — push darks darker, lights lighter
+        gray = ImageEnhance.Contrast(gray).enhance(2.5)
+
+        # Slight brightness boost to lift muddy mid-tones
+        gray = ImageEnhance.Brightness(gray).enhance(1.15)
+
+        buf = io.BytesIO()
+        gray.convert("RGB").save(buf, format="PNG")
+        return buf.getvalue()
 
     @staticmethod
     def _stitch_images_horizontally(image_bytes_list: list[bytes]) -> bytes:

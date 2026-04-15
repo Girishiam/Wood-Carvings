@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Layers, Wand2, Download, AlertCircle, RefreshCcw, Trash2, Check, Settings2, Image as ImageIcon } from 'lucide-react';
+import { Layers, Wand2, Download, AlertCircle, RefreshCcw, Settings2, Image as ImageIcon } from 'lucide-react';
 import axios from 'axios';
 import { API_BASE_URL } from './config';
 
@@ -21,7 +21,7 @@ export default function App() {
     fetchCacheStatus();
 
     // Test backend connection immediately
-    axios.get(`${API_BASE_URL}/health`).catch(e => {
+    axios.get(`${API_BASE_URL}/health`).catch(() => {
         console.warn("Backend might not be running. Start it with `python main.py`.");
     });
   }, []);
@@ -145,10 +145,9 @@ export default function App() {
             <header className="flex items-center gap-3 text-sm font-medium uppercase tracking-widest text-zinc-400">
               <Settings2 size={16} /> AI Engine
             </header>
-            <div className="grid grid-cols-2 gap-px bg-white/10 p-px">
+            <div className="grid grid-cols-1 gap-px bg-white/10 p-px">
               {[
                 { id: 'imagen_4', label: 'Imagen 4' },
-                { id: 'imagen_3', label: 'Imagen 3' }
               ].map((m) => (
                 <button
                   key={m.id}
@@ -261,7 +260,9 @@ export default function App() {
               <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col items-center justify-center">
                 <div className="w-16 h-16 border-t-2 border-l-2 border-white rounded-full animate-spin mb-8"></div>
                 <h3 className="text-sm font-mono uppercase tracking-widest text-white">Synthesizing Turnarounds</h3>
-                <p className="text-xs font-mono tracking-wider text-zinc-500 mt-2">Connecting to Google GenAI</p>
+                <p className="text-xs font-mono tracking-wider text-zinc-500 mt-2">
+                  Connecting to Google GenAI
+                </p>
               </motion.div>
             ) : results ? (
               <motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col flex-1 p-8">

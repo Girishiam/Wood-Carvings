@@ -1,25 +1,168 @@
 =========================================
-SECTION 1 — UNIVERSAL CHARACTER PROPORTIONS & ANATOMY:
+SECTION 1 — THE C.A.R.V.E.R. STANDARD (UNIVERSAL REQUIREMENTS FOR ALL MODES):
 
-*   **Character Archetypes:** Depict figures with extremely exaggerated proportions: either squashed, stout, and portly with massive heads, or incredibly tall, spindly, and stretched thin with tiny legs (e.g. spaghetti legs). Include anthropomorphic animal figures with exaggerated features.
-*   **Head and Face:** Render heads as notably large relative to the body (unless tall/spindly). Feature prominent, bulbous noses or long droopy noses. Eyes must be small, squinted, crinkled, or wide-eyed, set deep or shadowed. Mouths are frequently open in wide, exaggerated grins showing teeth, or in expressions of shouting, surprise, or weariness. Include jowly cheeks, carved stubble, massive bushy beards, or extraordinarily thick mustaches that hide the mouth. Ensure female figures possess prominent breasts, a defined waist, and rounded hips, with neutral to bewildered expressions featuring small carved eye indentations and subtly parted lips.
-*   **Body and Limbs:** Create thick, sturdy limbs. Design hands and feet as robust and oversized; specify large, three-toed feet for anthropomorphic rodents. Render footwear as chunky, blocky boots.
-*   **Expressions:** Clearly convey specific emotional states: determined, weary, mischievous, wide-eyed surprise, joyful, grumpy, world-weary, contemplative, observational, bewildered, or shouting. Include distinct elements like cigars clenched upwards or dangling, or pipes with a carved smoke cloud, to enhance character.
+C.A.R.V.E.R. Pattern Generation Requirements – Orthographic Carving Pattern Standard
+
+The goal of this system is to generate accurate, usable woodcarving patterns, not just illustrations. These patterns must function as real-world templates for cutting and carving a wood blank.
+
+Below are the required standards:
+
+⸻
+
+1. ORTHOGRAPHIC VIEWS (CRITICAL)
+
+The pattern must include four views only:
+	•	Front
+	•	Left Side (true left)
+	•	Back
+	•	Right Side (true right)
+
+These must be:
+	•	Perfectly orthographic (NO perspective distortion)
+	•	Aligned vertically and proportionally identical across all views
+	•	The right side must be a true mirrored version of the left side (not a reinterpretation)
+
+⸻
+
+2. CUTOUT ACCURACY (MOST IMPORTANT REQUIREMENT)
+
+This pattern will be:
+→ Printed
+→ Traced onto wood
+→ Cut out on a bandsaw
+
+Because of this:
+	•	The outer silhouette must be 100% accurate and clean
+	•	No ambiguity in edges—clear, bold outline only
+	•	Feet MUST be completely flat across the bottom
+	•	Front and back views must sit on a perfectly straight horizontal line
+	•	No rounding, no lift, no perspective taper
+	•	Side views must match the exact depth/profile of the front/back
+
+If the silhouette is wrong, the carving will fail before it begins.
+
+⸻
+
+3. PROPORTIONAL CONSISTENCY
+
+All four views must:
+	•	Match in height exactly
+	•	Match in width/depth relationships
+	•	Align on a shared centerline
+	•	Have consistent placement of features (eyes, shoulders, belt, etc.)
+
+No drifting between views.
+
+⸻
+
+4. DRAWING STYLE (CARVING-BASED, NOT ILLUSTRATION)
+
+This is NOT a shaded drawing.
+
+Style requirements:
+	•	Black and white only
+	•	Clean pen-and-ink linework
+	•	Bold, confident outer contour
+	•	Interior lines should represent carving planes (facets)
+
+Avoid:
+	•	Sketchy lines
+	•	Cross-hatching for shading
+	•	Painterly or soft rendering
+
+⸻
+
+5. FACET DEFINITION (KEY TO STYLE)
+
+The figure must show clear carving planes:
+	•	Use angular, geometric facets
+	•	Planes should be readable as knife cuts
+	•	Keep them intentional and simplified, not noisy
+	•	Emphasize:
+	•	Cheeks
+	•	Nose planes
+	•	Brow
+	•	Arms and legs
+	•	Clothing folds as blocky cuts
+
+This should resemble a low-poly / faceted carving, not a smooth sculpture.
+
+⸻
+
+6. SIMPLICITY FOR USABILITY
+
+This pattern must be usable by real carvers.
+
+That means:
+	•	Avoid excessive tiny details
+	•	Keep forms clear and bold
+	•	Prioritize readability over decoration
+	•	Every line should serve a carving purpose
+
+⸻
+
+7. CLEAN PRESENTATION
+	•	White background
+	•	Even spacing between the four views
+	•	No shadows, no gradients
+	•	Optional labels:
+	•	FRONT
+	•	LEFT
+	•	BACK
+	•	RIGHT
+
+⸻
+
+8. FINAL TEST (IMPORTANT)
+
+Before outputting a pattern, ask:
+
+“Could someone print this, glue it to a block of wood, cut it out, and successfully begin carving?”
+
+If the answer is anything other than YES, the pattern is not acceptable.
+
+⸻
+
+SUMMARY
+
+We are not generating artwork—we are generating functional carving patterns.
+
+Accuracy of silhouette, orthographic correctness, and clear facet structure are more important than visual style.
+
 
 =========================================
 SECTION 2 — RENDER MODE: COLOR WOOD CARVING
 
-*   **Carving Texture and Tooling:** Apply distinct, angular facets and rough textures across all surfaces, including faces, clothing folds, limbs, and bases. Show visible chisel marks, gouge marks, and overall hand-hewn, rustic aesthetic. Incorporate specific linear textures to imply visible wood grain. Render hair as blocky or unrefined carved texture, or as voluminous, wavy forms.
-*   **Paint Application and Finish:** Utilize opaque, solid paint colors with minimal blending. Where specified, apply a smooth, painted finish to skin and clothing. For most figures, use a solid, slightly matte finish that enhances carved details. Allow some areas to appear stained or semi-transparent, explicitly revealing the wood grain beneath the paint. For specific effects, apply white dry-brushing to simulate weathered wood and peeling paint, or subtly paint shadows into cracks and around features.
-*   **Material Specificity:**
-    *   **Natural Wood:** For unpainted carvings, ensure the finish is natural, light-colored wood, highlighting its subtle grain and visible tool marks without paint.
-    *   **Bases:** Carve irregular, multi-tiered, or rounded bases. Render ground textures as weathered gray planks, cracked asphalt, or uneven earth, often with painted details like yellow centerlines or camouflage patterns. Integrate small, carved elements like gold shell casings, golf balls, wood shavings, stacked tackle boxes, or scattered crushed cans directly onto the base.
-    *   **Props:** Carve props to match the overall rough, faceted style. Show specific textures like cross-hatch netting for fishing nets, or ridges for corrugated metal roofs. Render text (e.g., "TNT," "NO HUNTING," "CATCH OF THE DAY") as carved and painted black letters, adhering to the base contours.
+COLOR BLOCKS — Flat, bold color areas mimicking thin acrylic wash over basswood grain.
+Wood grain texture visible beneath paint. Matte only — no gloss, no sheen.
+Darker paint pools into deep carved recesses. No smooth gradient blends between color areas.
+Color regions are separated by sharp carved-edge lines, not soft blended transitions.
+
+SURFACE GEOMETRY — Every surface composed of flat angular facets meeting at sharp carved edges.
+V-tool gouge marks visible at plane junctions. No smooth rounded surfaces anywhere.
+Cheeks, nose, brow ridge, chin, shoulders, arms, legs, clothing folds — all defined as blocky geometric facets.
+
+ORTHOGRAPHIC REQUIREMENT — Color render must still maintain strict orthographic flat views.
+No perspective distortion even in color mode. Photograph-of-a-real-carved-object quality, shot perfectly straight-on.
+Pure white background.
 
 =========================================
-SECTION 3 — RENDER MODE: CLEAN PENCIL SKETCH
+SECTION 3 — RENDER MODE: CLEAN SKETCH (CARVING PATTERN)
 
-*   **Line Quality:** Define the character's overall silhouette, major limbs, and prominent clothing edges with strong, confident, medium-to-thick lines. Utilize finer, delicate lines for internal details, including facial wrinkles, stubble, beard texture, hair strands, plaid patterns, stitching, fabric creases, dimples, individual teeth, animal fur, and text. Vary line weight to effectively suggest depth and form, with heavier lines for foreground elements and contours, and lighter lines for subtle details and distant planes. Render weathered wood and rough textures using scratchy, uneven lines and varied hatching.
-*   **Shading Style and Depth:** Employ a professional range of smooth pencil gradients, cross-hatching, stippling, and controlled parallel lines to define volumetric shapes and textures. Create deep shadows using dense cross-hatching or solid black fills in recessed areas such as under the chin, within open mouths, beneath arms, under hat brims, and in deep clothing folds, ensuring strong contrast and depth. Apply lighter hatching, stippling, or soft blending for mid-tones, suggesting fabric textures, carved surfaces, and rounded forms. Reserve unshaded areas or very light pencil work for prominent highlights on upper surfaces, noses, foreheads, and shoulders. Translate all color information into a rich grayscale tonal spectrum, from bright highlights to deep shadows, with high contrast.
-*   **Texture and Detail Translation:** Translate distinct, angular carved facets into sharp, deliberate planes of light and shadow, creating a strong sense of three-dimensionality without an airbrushed finish. Render visible wood grain through subtle variations in line density and minor surface hatching, or abstract it into minimal, suggestive pencil strokes for a highly polished aesthetic. Represent camouflage patterns using contrasting dark and light patterned grayscale shapes. Render specific elements like bullet holes as stark black circles. Ensure all textual elements are clearly outlined and filled.
-*   **Overall Aesthetic:** Produce a clean, highly polished black-and-white professional pencil sketch that emphasizes line work, volumetric shapes, and a detailed, dimensional drawing capturing the handcrafted essence and expressive quality without relying on color. Maintain a consistent tonal range for distinct materials within the grayscale.
+LINE QUALITY — Bold, confident, clean pen-and-ink only. Single decisive strokes.
+ZERO cross-hatching. ZERO hatching. ZERO stippling. ZERO gray tones. ZERO shading.
+ZERO sketchy or loose lines. ZERO tone fills. ZERO gradients. Pure black ink on pure white.
+
+OUTER CONTOUR — Thick bold closed silhouette on every view. This is the bandsaw cut line.
+Must be unambiguous. A carver must be able to trace this line directly onto wood.
+
+INTERIOR LINES — Represent carving planes (facets) only. Each line marks the edge where two carved facets meet.
+Lines must be angular and geometric — like a low-poly model drawn flat.
+Facets to emphasize: cheeks, nose bridge, brow ridge, chin, shoulder plane breaks,
+arm and leg cylinder edges, clothing fold breaks (blocky angular cuts, not smooth curves).
+Hands: simplified blocky mitten shapes with 1–3 line indicators.
+Every interior line must serve a carving purpose. If it doesn't tell the carver where to cut, it does not belong.
+
+PRESENTATION — Pure white background. Even spacing between the 4 panels.
+Panel labels at top: FRONT — LEFT SIDE — BACK — RIGHT SIDE.
+No shadows. No drop shadows on figures. No decorative borders.

@@ -12,7 +12,6 @@ Endpoints:
 
 import sys
 import os
-import json
 
 # CRITICAL FIX for Python 3.14 (experimental) compatibility
 sys.modules["google._upb._message"] = None
@@ -56,11 +55,16 @@ _prompt: PromptService | None = None
 _vertex: VertexService | None = None
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_app: FastAPI):
     global _prompt, _vertex
     logger.info("Starting up services …")
     _prompt = PromptService()
-    _vertex = VertexService()
+
+    try:
+        _vertex = VertexService()
+    except Exception as e:
+        logger.warning(f"VertexService (Imagen 4) failed to initialize: {e}")
+
     yield
     logger.info("Shutting down …")
 
@@ -70,13 +74,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Chris Carves — AI Image Generation API",
-    description="Generate sketch and color character sheets using Imagen 3",
+    description="Generate sketch and color character sheets using Imagen 4 or Gemini Flash",
     version="1.0.0",
     lifespan=lifespan,
 )
 
-# CORS Configuration
-# Get allowed origins from environment variable or use defaults
 ALLOWED_ORIGINS = os.getenv(
     "ALLOWED_ORIGINS",
     "http://localhost:3000,http://localhost:3001,https://woodcarvings-frontend.onrender.com"
@@ -97,8 +99,9 @@ def get_prompt() -> PromptService:
 
 def get_vertex() -> VertexService:
     if _vertex is None:
-        raise HTTPException(status_code=503, detail="Vertex service unavailable")
+        raise HTTPException(status_code=503, detail="Imagen 4 service unavailable")
     return _vertex
+
 
 # ------------------------------------------------------------------ #
 # Routes                                                               #
@@ -152,36 +155,29 @@ async def clear_cache():
 async def generate(
     body: GenerateRequest,
     prompt_svc: PromptService = Depends(get_prompt),
-    vertex: VertexService = Depends(get_vertex),
 ):
-    """
-    Generate a 4-view character sheet using the Anchor Pipeline (front / back / left / right).
-    """
+    """Generate a 4-view character sheet. Routes to Imagen 4 or Gemini Flash based on model_provider."""
     t_start = time.monotonic()
 
-    # 1. Build optimised prompt dictionary (Front, Left, Back, Right)
+    # 1. Build prompt dictionary
     try:
         prompts_dict = await prompt_svc.build_sequential_prompts(
-            body.prompt, 
-            body.mode.value, 
-            body.difficulty.value
+            body.prompt,
+            body.mode.value,
+            body.difficulty.value,
         )
     except Exception as e:
         logger.error(f"[/generate] Prompt build failed: {e}")
         raise HTTPException(status_code=500, detail=f"Prompt building failed: {e}")
 
-    # 2. Determine target model based on user selection
-    model_map = {
-        "imagen_4": "imagen-4.0-generate-001",
-        "imagen_3": "imagen-3.0-generate-002",
-    }
-    target_model = model_map.get(body.model_provider.value, "imagen-3.0-generate-002")
-
-    # 3. Generate views via the Anchor & Reference Pipeline
+    # 2. Generate views via Imagen 4
     try:
-        raw_views = await vertex.generate_views(prompts_dict, target_model)
+        # 3. Generate views via the Anchor & Reference Pipeline
+        svc = get_vertex()
+        target_model = "imagen-4.0-generate-001"
+        raw_views = await svc.generate_views(prompts_dict, target_model)
     except Exception as e:
-        logger.error(f"[/generate] Imagen Generation failed: {e}")
+        logger.error(f"[/generate] Generation failed: {e}")
         raise HTTPException(status_code=500, detail=f"Image generation failed: {e}")
 
     # 4. Package response
@@ -189,15 +185,15 @@ async def generate(
     views = [GeneratedView(**v) for v in raw_views]
 
     logger.info(
-        f"[/generate] Done — mode={body.mode} views={len(views)} "
-        f"time={elapsed_ms}ms"
+        f"[/generate] Done — provider={body.model_provider} mode={body.mode} "
+        f"views={len(views)} time={elapsed_ms}ms"
     )
 
     return GenerateResponse(
         success=True,
         views=views,
         mode=body.mode,
-        prompt_used=prompts_dict["front"], # Returning the Anchor prompt for schema compliance
+        prompt_used=prompts_dict["front"],
         cached_references=False,
         generation_time_ms=elapsed_ms,
     )
@@ -207,7 +203,7 @@ async def generate(
 # ------------------------------------------------------------------ #
 
 @app.exception_handler(Exception)
-async def global_exception_handler(request, exc):
+async def global_exception_handler(_request, exc):
     logger.error(f"Unhandled exception: {exc}", exc_info=True)
     return JSONResponse(
         status_code=500,
