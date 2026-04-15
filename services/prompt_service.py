@@ -140,25 +140,25 @@ _NEGATIVE_PROMPT_COLOR = (
 
 _DIFFICULTY_MODS = {
     "beginner": (
-        "DIFFICULTY-BEGINNER: Single static gnome-proportioned figure. "
-        "Relaxed upright pose, arms at sides or resting on belly. "
-        "Legs are a solid uniform block — two thick stumps. Minimal interior detail. "
-        "NO negative space gaps between body parts. Silhouette must be simple and bold. "
-        "The enormous head and tiny body must be unmistakably clear even at small scale."
+        "POSE: fully upright, static. Arms at sides or resting on belly. "
+        "Legs as one solid block. No gaps between body parts. "
+        "EXPRESSION: one clear readable emotion — happy, grumpy, or smug. "
+        "STYLE: simple and bold — the personality comes through the face, not the pose."
     ),
     "intermediate": (
-        "DIFFICULTY-INTERMEDIATE: Slight weight shift or mild lean allowed. "
-        "Simple props held in oversized hands. Highly expressive face. "
-        "Negative space allowed between arms and torso, or between legs. "
-        "No extreme twisting. The squat gnome proportions must still be fully visible and dominant. "
-        "Props should look oversized and exaggerated relative to the stumpy body."
+        "POSE: slight weight shift, mild lean, or one arm raised holding prop. "
+        "Arms can separate from torso. Expressive body language. "
+        "EXPRESSION: highly exaggerated — wide grin, deep frown, raised eyebrow, puffed cheeks. "
+        "PROPS: oversized and comical — the prop should look HUGE relative to the stumpy body. "
+        "STYLE: funky and characterful — the figure should feel alive and humorous."
     ),
     "professional": (
-        "DIFFICULTY-PROFESSIONAL: Dynamic pose — leaning, gesturing, reacting. "
-        "Complex props or scene elements. Elaborate clothing with deep carved folds. "
-        "Highly expressive exaggerated face. Advanced negative space and undercuts. "
-        "The gnome/troll proportions (giant head, tiny legs) must remain fully intact — "
-        "do NOT let complexity drift into realistic proportions."
+        "POSE: fully dynamic — leaning, gesturing, reacting, mid-action. "
+        "Arms and legs in expressive positions. Body twist allowed. "
+        "EXPRESSION: extreme caricature — bugged eyes, gaping mouth, exaggerated grimace. "
+        "PROPS: elaborate and story-telling — the prop defines who this character is. "
+        "STYLE: maximum personality and humor — push every feature to its comic extreme. "
+        "Gnome proportions (giant head, tiny legs) must stay dominant even in dynamic poses."
     ),
 }
 
@@ -302,14 +302,15 @@ RULES:
                 f"{augmented_concept}"
             )
             carver_rules = (
-                "C.A.R.V.E.R. PATTERN RULES:\n"
-                "- Each view is perfectly ORTHOGRAPHIC — no perspective, no foreshortening\n"
-                "- Outer silhouette is BOLD and CLOSED — this is the bandsaw cut line\n"
-                "- Feet are completely flat on the bottom edge\n"
-                "- Figure stands fully upright — not leaning, not bending\n"
-                "- Proportions: large head (40% of height), squat torso, stumpy legs, big hands\n"
-                "- Interior lines only where carving planes change — keep line count LOW\n"
-                "- All 4 views identical height and aligned on same baseline"
+                f"C.A.R.V.E.R. PATTERN RULES:\n"
+                f"- Each view is perfectly ORTHOGRAPHIC — no perspective, no foreshortening\n"
+                f"- Outer silhouette is BOLD and CLOSED — this is the bandsaw cut line\n"
+                f"- Feet are on the bottom edge (flat for beginner, slight lift allowed for professional)\n"
+                f"- Proportions: enormous head (40% of height), squat torso, stumpy legs, oversized hands\n"
+                f"- EXPRESSION and POSTURE: follow the difficulty level below — {diff_block}\n"
+                f"- Interior lines only where carving planes change — keep line count LOW\n"
+                f"- All 4 views identical height and aligned on same baseline\n"
+                f"- The character's PERSONALITY must read clearly — exaggerate the expression and pose"
             )
         else:
             render_line = (
@@ -325,17 +326,18 @@ RULES:
                 f"{augmented_concept}"
             )
             carver_rules = (
-                "C.A.R.V.E.R. REQUIREMENTS:\n"
-                "- ORTHOGRAPHIC: Perfectly flat view, zero perspective distortion, zero foreshortening.\n"
-                "- SILHOUETTE: Bold unambiguous closed outline — this is the bandsaw cut line.\n"
-                "- FEET: Completely flat across the bottom edge. No lift, no curve.\n"
-                "- POSE: Character stands fully upright. NOT leaning, NOT bending, NOT hunching.\n"
-                "  Props held at side — they do NOT cause body to tilt.\n"
-                "- PROPORTIONS: Enormous head (40% of height), squat barrel torso, "
-                "  very short stumpy legs, oversized hands, large flat feet. Gnome/troll caricature.\n"
-                "- SIMPLICITY: Every line must serve a carving purpose.\n"
-                "- BANDSAW TEST: Could someone print this, glue it to a wood block, "
-                "  and cut it out cleanly? If not — simplify."
+                f"C.A.R.V.E.R. REQUIREMENTS:\n"
+                f"- ORTHOGRAPHIC: Perfectly flat view, zero perspective distortion, zero foreshortening.\n"
+                f"- SILHOUETTE: Bold unambiguous closed outline — this is the bandsaw cut line.\n"
+                f"- FEET: Flat on the bottom edge.\n"
+                f"- PROPORTIONS: Enormous head (40% of height), squat barrel torso, "
+                f"  stumpy legs, oversized hands, large flat feet. Gnome/troll caricature.\n"
+                f"- POSE & EXPRESSION: follow difficulty level — {diff_block}\n"
+                f"- The character's PERSONALITY must be immediately readable — "
+                f"  exaggerate the expression, push the pose, make the prop feel OVERSIZED and comical.\n"
+                f"- SIMPLICITY: Every carved line must serve a purpose.\n"
+                f"- BANDSAW TEST: Could someone print this, glue it to a wood block, "
+                f"  and cut it out cleanly? If not — simplify."
             )
 
         view_configs = {
