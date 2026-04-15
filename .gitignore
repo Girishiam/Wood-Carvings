@@ -113,7 +113,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
@@ -149,7 +148,6 @@ cython_debug/
 .idea/
 
 # VS Code
-.vscode/
 
 # MacOS
 .DS_Store
@@ -173,3 +171,8 @@ scripts/
 
 # Render build artifacts
 .render-buildpacks-cache/
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+config.bat
+node_modules
